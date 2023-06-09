@@ -26,6 +26,22 @@ func CreateConnection() *sql.DB {
 	return db
 }
 
+func CheckNameUniqueness(name string) (int, error) {
+	// create the postgres db connection
+	db := CreateConnection()
+
+	// close the db connection
+	defer db.Close()
+	var count int
+	query := `SELECT COUNT(*) FROM company WHERE name = $1`
+	err := db.QueryRow(query, name).Scan(&count)
+	if err != nil {
+		log.Printf("Unable to execute the query. %v", err)
+		return count, err
+	}
+	return count, nil
+
+}
 func CreateCompanyQuery(company models.Company) uuid.UUID {
 
 	// create the postgres db connection

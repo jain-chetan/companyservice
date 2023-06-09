@@ -33,9 +33,10 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 	token, err := auth.CreateToken(user)
 	if err != nil {
 		log.Printf("Unable to create token . %v", err)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(token)
+	_ = json.NewEncoder(w).Encode(token)
 }
 
 // @Summary Create a new company
@@ -56,7 +57,7 @@ func CreateCompany(w http.ResponseWriter, r *http.Request) {
 			Message: "Not a valid token",
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 	var company models.Company
@@ -75,18 +76,35 @@ func CreateCompany(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 
-	companyID := database.CreateCompanyQuery(company)
-	res := models.CreateResponse{
-		ID:      companyID,
-		Code:    201,
-		Message: "Company inserted",
+	unique, err := database.CheckNameUniqueness(company.Name)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
+
+	if unique == 0 {
+		companyID := database.CreateCompanyQuery(company)
+		res := models.CreateResponse{
+			ID:      companyID,
+			Code:    201,
+			Message: "Company inserted",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(res)
+
+	} else {
+		res := models.Response{
+			Code:    400,
+			Message: "Name not unique",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(res)
+	}
+
 }
 
 // @Summary Get a company by ID
@@ -120,12 +138,12 @@ func GetCompany(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(company)
+	_ = json.NewEncoder(w).Encode(company)
 }
 
 // @Summary Update a company by ID
@@ -146,7 +164,7 @@ func PatchCompany(w http.ResponseWriter, r *http.Request) {
 			Message: "Not a valid token",
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 	params := mux.Vars(r)
@@ -174,7 +192,7 @@ func PatchCompany(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	_ = json.NewEncoder(w).Encode(res)
 }
 
 // @Summary Delete a company by ID
@@ -194,7 +212,7 @@ func DeleteCompany(w http.ResponseWriter, r *http.Request) {
 			Message: "Not a valid token",
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 	params := mux.Vars(r)
@@ -215,7 +233,7 @@ func DeleteCompany(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(res)
+		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
 
@@ -226,5 +244,5 @@ func DeleteCompany(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	_ = json.NewEncoder(w).Encode(res)
 }
