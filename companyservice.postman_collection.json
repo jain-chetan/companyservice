@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "1b6ebda5-b22a-4236-9368-676e614d159d",
+		"name": "companyservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Insert Company",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InJvb3QifQ.eZHWnHnsjY-ocovs78o8feoWeJRch-DNTIVY7l58Asg",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"XM\",\r\n    \"description\" :\"Trading company\",\r\n    \"employees\" : 1000,\r\n    \"registered\" : true,\r\n    \"type\" : \"Corporation\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/companies"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/companies/b24d9bde-06a8-11ee-9450-60a5e29ef3ad"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {}
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InJvb3QifQ.eZHWnHnsjY-ocovs78o8feoWeJRch-DNTIVY7l58Asg",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"XM\",\r\n    \"description\" :\"Trading company\",\r\n    \"employees\" : 5000,\r\n    \"registered\" : true,\r\n    \"type\" : \"Corporation\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/companies/b24d9bde-06a8-11ee-9450-60a5e29ef3ad"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"abc@gmail.com\",\r\n    \"password\": \"root\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/createtoken"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Company",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {}
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiY0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InJvb3QifQ.eZHWnHnsjY-ocovs78o8feoWeJRch-DNTIVY7l58Asg",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/companies/b24d9bde-06a8-11ee-9450-60a5e29ef3ad"
+			},
+			"response": []
+		}
+	]
+}

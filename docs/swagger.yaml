@@ -1,5 +1,107 @@
+swagger: '2.0'
+info:
+  title: "Company Service"
+  version: v1
+paths:
+  /companies:
+    post:
+      description: Create a new company with the specified details
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - company
+      summary: Create a new company
+      parameters:
+        - description: Company object that needs to be created
+          name: company
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/models.Company'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Company'
+        '400':
+          description: Bad Request
+  /companies/{id}:
+    get:
+      description: Get a company by its ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - company
+      summary: Get a company by ID
+      parameters:
+        - type: string
+          description: Company ID
+          name: id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Company'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+    delete:
+      description: Delete a company by its ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - company
+      summary: Delete a company by ID
+      parameters:
+        - type: string
+          description: Company ID
+          name: id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+    patch:
+      description: Update a company with the specified details
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - company
+      summary: Update a company by ID
+      parameters:
+        - type: string
+          description: Company ID
+          name: id
+          in: path
+          required: true
+        - description: Updated company object
+          name: company
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/models.Company'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+
 definitions:
   models.Company:
+    type: object
     properties:
       description:
         type: string
@@ -13,118 +115,15 @@ definitions:
         type: boolean
       type:
         $ref: '#/definitions/models.CompanyType'
-    type: object
   models.CompanyType:
-    enum:
-    - Corporation
-    - NonProfit
-    - Cooperative
-    - Sole Proprietorship
     type: string
+    enum:
+      - Corporation
+      - NonProfit
+      - Cooperative
+      - Sole Proprietorship
     x-enum-varnames:
-    - Corporation
-    - NonProfit
-    - Cooperative
-    - SoleProprietorship
-info:
-  contact: {}
-paths:
-  /companies:
-    post:
-      consumes:
-      - application/json
-      description: Create a new company with the specified details
-      parameters:
-      - description: Company object that needs to be created
-        in: body
-        name: company
-        required: true
-        schema:
-          $ref: '#/definitions/models.Company'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Company'
-        "400":
-          description: Bad Request
-      summary: Create a new company
-      tags:
-      - company
-  /companies/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a company by its ID
-      parameters:
-      - description: Company ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-      summary: Delete a company by ID
-      tags:
-      - company
-    get:
-      consumes:
-      - application/json
-      description: Get a company by its ID
-      parameters:
-      - description: Company ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Company'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-      summary: Get a company by ID
-      tags:
-      - company
-    patch:
-      consumes:
-      - application/json
-      description: Update a company with the specified details
-      parameters:
-      - description: Company ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Updated company object
-        in: body
-        name: company
-        required: true
-        schema:
-          $ref: '#/definitions/models.Company'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-      summary: Update a company by ID
-      tags:
-      - company
-  /docs:
-    get:
-      responses: {}
-swagger: "2.0"
+      - Corporation
+      - NonProfit
+      - Cooperative
+      - SoleProprietorship

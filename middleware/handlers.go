@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,6 +21,23 @@ func SwaggerHandler() http.Handler {
 	)
 }
 
+func CreateToken(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Unable to decode the request body . %v", err)
+		return
+	}
+	token, err := auth.CreateToken(user)
+	if err != nil {
+		log.Printf("Unable to create token . %v", err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(token)
+}
+
 // @Summary Create a new company
 // @Description Create a new company with the specified details
 // @Tags company
@@ -31,23 +47,6 @@ func SwaggerHandler() http.Handler {
 // @Success 201 {object} models.Company
 // @Failure 400
 // @Router /companies [post]
-
-func CreateToken(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to decode the request body . %v", err)
-		return
-	}
-	token, err := auth.CreateToken(user)
-	if err != nil {
-		log.Fatalf("Unable to create token . %v", err)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(token)
-}
 func CreateCompany(w http.ResponseWriter, r *http.Request) {
 
 	_, err := auth.ValidateToken(r.Header)
@@ -65,13 +64,18 @@ func CreateCompany(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&company)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to decode the request body . %v", err)
+		log.Printf("Unable to decode the request body . %v", err)
 		return
 	}
 
 	if company.Name == "" || company.Employees == 0 || company.Type == "" {
+		res := models.Response{
+			Code:    400,
+			Message: "Name, Employees, and Type are required fields",
+		}
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Name, Employees, and Type are required fields")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(res)
 		return
 	}
 
@@ -102,18 +106,20 @@ func GetCompany(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(params["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to convert string to int . %v", err)
+		log.Printf("Unable to convert string to int . %v", err)
 		return
 	}
 
 	company, err := database.GetCompanyQuery(id)
 
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+
 		res := models.Response{
 			Code:    404,
 			Message: "Company not found",
 		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(res)
 		return
 	}
@@ -148,7 +154,7 @@ func PatchCompany(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(params["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to convert string to int . %v", err)
+		log.Printf("Unable to convert string to int . %v", err)
 	}
 
 	var company models.Company
@@ -156,7 +162,7 @@ func PatchCompany(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&company)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to decode the request body.  %v", err)
+		log.Printf("Unable to decode the request body.  %v", err)
 	}
 
 	_ = database.PatchCompanyQuery(id, company)
@@ -196,7 +202,7 @@ func DeleteCompany(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Fatalf("Unable to convert the string into int.  %v", err)
+		log.Printf("Unable to convert the string into int.  %v", err)
 		return
 	}
 	_, err = database.GetCompanyQuery(id)
