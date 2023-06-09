@@ -1,0 +1,130 @@
+definitions:
+  models.Company:
+    properties:
+      description:
+        type: string
+      employees:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      registered:
+        type: boolean
+      type:
+        $ref: '#/definitions/models.CompanyType'
+    type: object
+  models.CompanyType:
+    enum:
+    - Corporation
+    - NonProfit
+    - Cooperative
+    - Sole Proprietorship
+    type: string
+    x-enum-varnames:
+    - Corporation
+    - NonProfit
+    - Cooperative
+    - SoleProprietorship
+info:
+  contact: {}
+paths:
+  /companies:
+    post:
+      consumes:
+      - application/json
+      description: Create a new company with the specified details
+      parameters:
+      - description: Company object that needs to be created
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/models.Company'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Company'
+        "400":
+          description: Bad Request
+      summary: Create a new company
+      tags:
+      - company
+  /companies/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a company by its ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Delete a company by ID
+      tags:
+      - company
+    get:
+      consumes:
+      - application/json
+      description: Get a company by its ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Company'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Get a company by ID
+      tags:
+      - company
+    patch:
+      consumes:
+      - application/json
+      description: Update a company with the specified details
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated company object
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/models.Company'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Update a company by ID
+      tags:
+      - company
+  /docs:
+    get:
+      responses: {}
+swagger: "2.0"
